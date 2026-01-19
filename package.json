@@ -63,5 +63,13 @@
         "ts-jest": "^29.4.6",
         "tslib": "^2.8.1",
         "typescript": "^5.9.3"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/akkarachaiwangcharoensap/markdown-editor.git"
+    },
+    "homepage": "https://github.com/akkarachaiwangcharoensap/markdown-editor#readme",
+    "bugs": {
+        "url": "https://github.com/akkarachaiwangcharoensap/markdown-editor/issues"
     }
 }
