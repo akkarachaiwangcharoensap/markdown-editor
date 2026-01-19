@@ -1,0 +1,66 @@
+{
+    "name": "@akiwiki/markdown-editor",
+    "version": "1.0.0",
+    "description": "A customizable, TypeScript-based React markdown editor with sanitization",
+    "main": "dist/index.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "type": "module",
+    "scripts": {
+        "build": "rollup -c",
+        "lint": "eslint src --ext .ts,.tsx",
+        "type-check": "tsc --noEmit",
+        "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest",
+        "test:watch": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest --watch",
+        "test:coverage": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest --coverage"
+    },
+    "keywords": [
+        "markdown",
+        "editor",
+        "react",
+        "typescript",
+        "sanitize",
+        "preview"
+    ],
+    "author": "Aki W.",
+    "license": "MIT",
+    "peerDependencies": {
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
+    },
+    "dependencies": {
+        "@types/react-syntax-highlighter": "^15.5.13",
+        "katex": "^0.16.27",
+        "react-markdown": "^9.1.0",
+        "react-syntax-highlighter": "^16.1.0",
+        "rehype-katex": "^7.0.1",
+        "rehype-raw": "^7.0.0",
+        "rehype-sanitize": "^6.0.0",
+        "remark-gfm": "^4.0.1",
+        "remark-math": "^6.0.0"
+    },
+    "devDependencies": {
+        "@rollup/plugin-commonjs": "^29.0.0",
+        "@rollup/plugin-node-resolve": "^16.0.3",
+        "@rollup/plugin-typescript": "^11.1.6",
+        "@testing-library/jest-dom": "^6.1.5",
+        "@testing-library/react": "^14.3.1",
+        "@types/jest": "^29.5.0",
+        "@types/react": "^18.3.27",
+        "eslint": "^8.56.0",
+        "identity-obj-proxy": "^3.0.0",
+        "jest": "^29.7.0",
+        "jest-environment-jsdom": "^29.7.0",
+        "postcss": "^8.5.6",
+        "rollup": "^4.55.1",
+        "rollup-plugin-peer-deps-external": "^2.2.4",
+        "rollup-plugin-postcss": "^4.0.2",
+        "ts-jest": "^29.4.6",
+        "tslib": "^2.8.1",
+        "typescript": "^5.9.3"
+    }
+}
