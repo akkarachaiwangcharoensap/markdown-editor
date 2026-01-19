@@ -89,22 +89,6 @@ function App() {
 - **Split Mode**: Edit and preview side-by-side (default)
 - **Preview Mode**: View rendered output only
 
-### ResponsiveMarkdownEditor
-
-Automatically adapts to screen size:
-- Mobile (< 768px): Starts in edit mode with toggle
-- Desktop (≥ 768px): Starts in split mode
-
-```tsx
-import { ResponsiveMarkdownEditor } from '@akiwiki/markdown-editor';
-
-<ResponsiveMarkdownEditor
-  value={value}
-  onChange={setValue}
-  enableMath={true}
-/>
-```
-
 ### Performance Optimization
 
 Use `debounceMs` to delay preview rendering during rapid typing:
