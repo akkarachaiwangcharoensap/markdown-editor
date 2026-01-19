@@ -29,6 +29,8 @@ import 'katex/dist/katex.min.css';
 
 ## Demo
 
+[View Live Demo](https://akiwiki.com/projects/markdown-editor)
+
 To run the interactive demo locally:
 
 ```bash
