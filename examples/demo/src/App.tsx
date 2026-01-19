@@ -4,7 +4,7 @@ import {
 	EditInPlaceMarkdownCard,
 	MarkdownRenderer
 } from '@akiwiki/markdown-editor';
-import '@akiwiki/markdown-editor/dist/index.css';
+import 'katex/dist/katex.min.css';
 
 const DEMO_CONTENT = `# Interactive Markdown Editor
 

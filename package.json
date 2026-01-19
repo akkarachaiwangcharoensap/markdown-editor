@@ -1,6 +1,6 @@
 {
     "name": "@akiwiki/markdown-editor",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "A customizable, TypeScript-based React markdown editor with sanitization",
     "main": "dist/index.js",
     "module": "dist/index.esm.js",

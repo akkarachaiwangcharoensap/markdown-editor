@@ -20,6 +20,13 @@ A customizable React markdown editor component library built on [react-markdown]
 npm install @akiwiki/markdown-editor
 ```
 
+**Important:** To use LaTeX math features, import KaTeX CSS in your app:
+
+```tsx
+// In your main App.tsx or index.tsx
+import 'katex/dist/katex.min.css';
+```
+
 ## Demo
 
 To run the interactive demo locally:

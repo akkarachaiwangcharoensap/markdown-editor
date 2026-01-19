@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BlockMarkdownEditor } from '../../../src';
+import 'katex/dist/katex.min.css';
 
 const INITIAL_CONTENT = `# Welcome to Block Editor
 
