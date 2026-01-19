@@ -17,7 +17,7 @@ A customizable React markdown editor component library built on [react-markdown]
 ## Installation
 
 ```bash
-npm install @yourname/markdown-editor
+npm install @akiwiki/markdown-editor
 ```
 
 ## Demo
@@ -45,7 +45,7 @@ The demo will be available at `http://localhost:5173` and showcases all features
 ## Quick Start
 
 ```tsx
-import { MarkdownEditor } from '@yourname/markdown-editor';
+import { MarkdownEditor } from '@akiwiki/markdown-editor';
 
 function App() {
   const [value, setValue] = useState('# Hello World');
@@ -64,7 +64,7 @@ function App() {
 ### MarkdownEditorWithPreview
 
 ```tsx
-import { MarkdownEditorWithPreview } from '@yourname/markdown-editor';
+import { MarkdownEditorWithPreview } from '@akiwiki/markdown-editor';
 
 function App() {
   const [value, setValue] = useState('');
@@ -96,7 +96,7 @@ Automatically adapts to screen size:
 - Desktop (≥ 768px): Starts in split mode
 
 ```tsx
-import { ResponsiveMarkdownEditor } from '@yourname/markdown-editor';
+import { ResponsiveMarkdownEditor } from '@akiwiki/markdown-editor';
 
 <ResponsiveMarkdownEditor
   value={value}
@@ -122,7 +122,7 @@ Use `debounceMs` to delay preview rendering during rapid typing:
 ### Basic Usage
 
 ```tsx
-import { EditInPlaceMarkdown } from '@yourname/markdown-editor';
+import { EditInPlaceMarkdown } from '@akiwiki/markdown-editor';
 
 function MyNotes() {
   const [content, setContent] = useState('');
@@ -141,7 +141,7 @@ function MyNotes() {
 ### With Card Wrapper
 
 ```tsx
-import { EditInPlaceMarkdownCard } from '@yourname/markdown-editor';
+import { EditInPlaceMarkdownCard } from '@akiwiki/markdown-editor';
 
 <EditInPlaceMarkdownCard
   title="Meeting Notes"
@@ -169,7 +169,7 @@ import { EditInPlaceMarkdownCard } from '@yourname/markdown-editor';
 You can use your own syntax highlighter instead of the default one:
 
 ```tsx
-import { MarkdownRenderer } from '@yourname/markdown-editor';
+import { MarkdownRenderer } from '@akiwiki/markdown-editor';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -228,7 +228,7 @@ Works with all components that render markdown:
 ### Using the Hook
 
 ```tsx
-import { useMarkdown } from '@yourname/markdown-editor';
+import { useMarkdown } from '@akiwiki/markdown-editor';
 
 function MyComponent() {
   const { markdown, updateMarkdown, resetMarkdown } = useMarkdown('# Initial');
