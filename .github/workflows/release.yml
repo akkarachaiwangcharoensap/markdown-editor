@@ -71,8 +71,6 @@ jobs:
             See all changes at: https://github.com/${{ github.repository }}/compare/${{ steps.changelog.outputs.previous_tag }}...${{ github.ref_name }}
           draft: false
           prerelease: false
-          files: |
-            dist/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
