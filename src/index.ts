@@ -15,4 +15,5 @@ export type {
     MarkdownEditorProps,
     MarkdownRendererProps,
     EditInPlaceMarkdownProps,
+    ComponentInjection,
 } from './types';

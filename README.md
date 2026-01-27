@@ -5,6 +5,7 @@ A customizable React markdown editor component library built on [react-markdown]
 ## Features
 
 - **Fully Customizable Styles** - Style each markdown element independently
+- **Custom Component Injection** - Embed React components directly in markdown
 - **XSS Protection** - Built-in HTML sanitization using rehype-sanitize
 - **Real-time Preview** - Live markdown rendering with debounced updates
 - **Github-Flavoured Markdown (GFM) Support** - Tables, strikethrough, task lists, autolinks
@@ -157,6 +158,250 @@ import { EditInPlaceMarkdownCard } from '@akiwiki/markdown-editor';
 
 - **Escape**: Cancel and revert changes
 
+## Custom Component Injection
+
+Inject interactive React components directly into your markdown content using PascalCase syntax. This powerful feature allows you to create rich, interactive documentation and content.
+
+### Basic Usage
+
+```tsx
+import { MarkdownRenderer } from '@akiwiki/markdown-editor';
+
+// 1. Define your custom components
+const Alert = ({ children, type = 'info' }) => {
+  const colors = {
+    info: 'bg-blue-50 border-blue-200 text-blue-800',
+    warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
+    error: 'bg-red-50 border-red-200 text-red-800',
+    success: 'bg-green-50 border-green-200 text-green-800',
+  };
+
+  return (
+    <div className={`p-4 border-l-4 rounded ${colors[type]} my-4`}>
+      {children}
+    </div>
+  );
+};
+
+const Badge = ({ children, color = 'blue' }) => (
+  <span className={`inline-block px-3 py-1 text-sm font-semibold 
+    rounded-full bg-${color}-100 text-${color}-800 mx-1`}>
+    {children}
+  </span>
+);
+
+// 2. Create a customComponents object
+const customComponents = {
+  Alert,
+  Badge,
+};
+
+// 3. Pass to MarkdownRenderer
+function MyComponent() {
+  const markdown = `
+# Custom Components Demo
+
+<Alert type="info">
+This is an **alert** with full markdown support inside!
+</Alert>
+
+Mix <Badge color="blue">badges</Badge> with your text.
+`;
+
+  return (
+    <MarkdownRenderer
+      content={markdown}
+      customComponents={customComponents}
+    />
+  );
+}
+```
+
+### Interactive Components
+
+Create stateful components that respond to user interactions:
+
+```tsx
+import { useState } from 'react';
+
+const Counter = (props) => {
+  const { initial = '0', step = '1', label } = props;
+  
+  const initialValue = parseInt(String(initial), 10) || 0;
+  const stepValue = parseInt(String(step), 10) || 1;
+  
+  const [count, setCount] = useState(initialValue);
+  
+  return (
+    <div className="inline-flex items-center gap-3 p-4 border rounded-lg">
+      {label && <span className="font-medium">{label}:</span>}
+      <button 
+        onClick={() => setCount(count - stepValue)}
+        className="px-3 py-1 bg-red-500 text-white rounded"
+      >
+        −
+      </button>
+      <span className="text-2xl font-bold">{count}</span>
+      <button 
+        onClick={() => setCount(count + stepValue)}
+        className="px-3 py-1 bg-green-500 text-white rounded"
+      >
+        +
+      </button>
+    </div>
+  );
+};
+
+const customComponents = { Counter };
+
+// Use in markdown:
+const markdown = `
+<Counter initial="0" step="1" label="Click Counter" />
+`;
+```
+
+### Collapsible Sections
+
+```tsx
+import { useState } from 'react';
+
+const Collapsible = ({ children, title, defaultOpen = false }) => {
+  const initialOpen = typeof defaultOpen === 'string' 
+    ? defaultOpen === 'true' || defaultOpen === 'True' || defaultOpen === '1'
+    : defaultOpen;
+  
+  const [isOpen, setIsOpen] = useState(initialOpen);
+  
+  return (
+    <div className="border border-gray-300 rounded-lg my-4 overflow-hidden">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 
+          flex items-center justify-between text-left font-medium"
+      >
+        <span>{title}</span>
+        <span className="text-xl">{isOpen ? '▼' : '▶'}</span>
+      </button>
+      {isOpen && (
+        <div className="p-4 bg-white">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Use in markdown:
+const markdown = `
+<Collapsible title="Advanced Features" defaultOpen="false">
+
+This content is hidden by default. Click to expand!
+
+- Collapsible sections
+- **Markdown** support inside
+- Perfect for FAQs and documentation
+
+</Collapsible>
+`;
+```
+
+### Component Props
+
+All props are passed as strings from markdown and need to be parsed in your component:
+
+```tsx
+const ProgressBar = (props) => {
+  // Props come as strings, parse them
+  const value = parseFloat(String(props.value)) || 0;
+  const max = parseFloat(String(props.max)) || 100;
+  const color = props.color || 'blue';
+  
+  const percentage = Math.min(100, Math.max(0, (value / max) * 100));
+  
+  return (
+    <div className="my-4">
+      <div className="w-full bg-gray-200 rounded-full h-4">
+        <div 
+          className={`h-full bg-${color}-600 transition-all`}
+          style={{ width: `${percentage}%` }}
+        />
+      </div>
+    </div>
+  );
+};
+
+// Use in markdown:
+const markdown = `
+<ProgressBar value="75" max="100" color="blue" />
+`;
+```
+
+### Full Markdown Support
+
+Custom components support full markdown syntax inside them:
+
+```tsx
+const Card = ({ children, title }) => (
+  <div className="border rounded-lg p-6 my-4 shadow-sm bg-white">
+    {title && <h3 className="text-lg font-semibold mb-3">{title}</h3>}
+    <div className="text-gray-700">{children}</div>
+  </div>
+);
+
+// Markdown with nested formatting:
+const markdown = `
+<Card title="Example Card">
+
+Cards can contain any markdown content:
+- Lists and formatting
+- \`code blocks\`
+- **Bold** and *italic* text
+- Even other components!
+
+</Card>
+`;
+```
+
+### Works with All Editor Components
+
+Custom components work with any rendering component:
+
+```tsx
+// With MarkdownRenderer
+<MarkdownRenderer
+  content={markdown}
+  customComponents={customComponents}
+/>
+
+// With EditInPlaceMarkdown
+<EditInPlaceMarkdown
+  value={markdown}
+  onChange={setMarkdown}
+  customComponents={customComponents}
+/>
+
+// With MarkdownEditor
+<MarkdownEditor
+  value={markdown}
+  onChange={setMarkdown}
+  customComponents={customComponents}
+/>
+
+// With MarkdownEditorWithPreview
+<MarkdownEditorWithPreview
+  value={markdown}
+  onChange={setMarkdown}
+  customComponents={customComponents}
+/>
+```
+
+### Important Notes
+
+- Component names must be in PascalCase, following TSX naming convention (e.g., `<MyComponent />`)
+- Props are always passed as strings and need parsing if you need other types
+- Components support full markdown syntax inside them
+- Self-closing tags work: `<Badge color="blue">text</Badge>` or `<Counter />`
+
 ## Custom Syntax Highlighting
 
 You can use your own syntax highlighter instead of the default one:
@@ -201,8 +446,6 @@ Works with all components that render markdown:
   }}
 />
 ```
-
-## Advanced Usage
 
 ### Custom Styles
 

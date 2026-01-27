@@ -35,6 +35,10 @@ export interface SyntaxHighlighterConfig {
     className?: string;
 }
 
+export interface ComponentInjection {
+    [key: string]: React.ComponentType<any>;
+}
+
 export type ViewMode = 'edit' | 'preview' | 'split';
 
 export interface MarkdownEditorWithPreviewProps {
@@ -52,6 +56,7 @@ export interface MarkdownEditorWithPreviewProps {
     showModeToggle?: boolean;
     debounceMs?: number;
     syntaxHighlighter?: SyntaxHighlighterConfig;
+    customComponents?: ComponentInjection;
 }
 
 export interface MarkdownEditorProps {
@@ -68,6 +73,7 @@ export interface MarkdownEditorProps {
     enableGfm?: boolean;
     enableMath?: boolean;
     syntaxHighlighter?: SyntaxHighlighterConfig;
+    customComponents?: ComponentInjection;
 }
 
 export interface MarkdownRendererProps {
@@ -78,6 +84,7 @@ export interface MarkdownRendererProps {
     enableGfm?: boolean;
     enableMath?: boolean;
     syntaxHighlighter?: SyntaxHighlighterConfig;
+    customComponents?: ComponentInjection;
 }
 
 export interface EditInPlaceMarkdownProps {
@@ -95,4 +102,5 @@ export interface EditInPlaceMarkdownProps {
     showEditIcon?: boolean;
     autoFocus?: boolean;
     syntaxHighlighter?: SyntaxHighlighterConfig;
+    customComponents?: ComponentInjection;
 }

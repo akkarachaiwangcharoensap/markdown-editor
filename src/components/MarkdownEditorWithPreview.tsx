@@ -23,6 +23,7 @@ export const MarkdownEditorWithPreview: React.FC<MarkdownEditorWithPreviewProps>
     showModeToggle = true,
     debounceMs = 0,
     syntaxHighlighter,
+    customComponents,
 }) => {
     const [mode, setMode] = useState<ViewMode>(defaultMode);
 
@@ -95,6 +96,7 @@ export const MarkdownEditorWithPreview: React.FC<MarkdownEditorWithPreviewProps>
                             enableGfm={enableGfm}
                             enableMath={enableMath}
                             syntaxHighlighter={syntaxHighlighter}
+                            customComponents={customComponents}
                         />
                     </div>
                 );
@@ -120,6 +122,7 @@ export const MarkdownEditorWithPreview: React.FC<MarkdownEditorWithPreviewProps>
                                 enableGfm={enableGfm}
                                 enableMath={enableMath}
                                 syntaxHighlighter={syntaxHighlighter}
+                                customComponents={customComponents}
                             />
                         </div>
                     </div>

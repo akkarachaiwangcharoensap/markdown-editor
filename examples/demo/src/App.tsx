@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
 	EditInPlaceMarkdown,
 	EditInPlaceMarkdownCard,
 	MarkdownRenderer
 } from '@akiwiki/markdown-editor';
 import 'katex/dist/katex.min.css';
+import { customComponents } from './CustomComponents';
 
 const DEMO_CONTENT = `# Interactive Markdown Editor
 
@@ -94,10 +95,356 @@ const MEDIA_CONTENT = `# Image Examples
 Images are automatically rendered with reasonable sizing.
 `;
 
+const COMPONENT_INJECTION_CONTENT = `# Custom Component Injection
+
+Inject interactive React components directly into your markdown using PascalCase syntax.
+
+<Tabs>
+
+<Tab label="Output">
+
+<Counter initial="0" step="1" label="Click Counter" />
+
+<ProgressBar value="75" max="100" color="blue" label="Progress" />
+
+<Alert type="info">
+Use **custom components** with full markdown support inside!
+</Alert>
+
+<Card title="📦 Example Card">
+
+Cards can contain any markdown content:
+- Lists and formatting
+- \`print("hello world")\`
+- Even other components!
+
+</Card>
+
+Mix <Badge color="blue">badges</Badge> with your text.
+
+<Highlight color="yellow">Highlighted text</Highlight> can draw attention to important content.
+
+<YoutubeVideo url="dQw4w9WgXcQ" height="315" />
+
+<Collapsible title="Collapsible" defaultOpen="false">
+
+This content is hidden by default. Click to expand!
+
+- Collapsible sections
+- **Markdown** support inside
+- Perfect for FAQs and documentation
+
+</Collapsible>
+
+</Tab>
+
+<Tab label="Source">
+
+\`\`\`markdown
+<Counter initial="0" step="1" label="Click Counter" />
+
+<ProgressBar value="75" max="100" color="blue" label="Progress" />
+
+<Alert type="info">
+Use **custom components** with full markdown support inside!
+</Alert>
+
+<Card title="📦 Example Card">
+
+Cards can contain any markdown content:
+- Lists and formatting
+- \\\`print("hello world")\\\`
+- Even other components!
+
+</Card>
+
+Mix <Badge color="blue">badges</Badge> with your text.
+
+<Highlight color="yellow">Highlighted text</Highlight> can draw attention to important content.
+
+<YoutubeVideo url="dQw4w9WgXcQ" height="315" />
+
+<Collapsible title="Collapsible" defaultOpen="false">
+
+This content is hidden by default. Click to expand!
+
+- Collapsible sections
+- **Markdown** support inside
+- Perfect for FAQs and documentation
+
+</Collapsible>
+\`\`\`
+
+</Tab>
+
+
+<Tab label="Counter.tsx">
+
+\`\`\`tsx
+import { useState } from 'react';
+
+const Counter = (props: any) => {
+  const { initial = '0', step = '1', label } = props;
+  
+  const initialValue = parseInt(String(initial), 10) || 0;
+  const stepValue = parseInt(String(step), 10) || 1;
+  
+  const [count, setCount] = useState(initialValue);
+  
+  return (
+    <div className="inline-flex items-center gap-3 p-4 border rounded-lg">
+      {label && <span className="font-medium">{label}:</span>}
+      <button 
+        onClick={() => setCount(count - stepValue)}
+        className="px-3 py-1 bg-red-500 text-white rounded"
+      >
+        −
+      </button>
+      <span className="text-2xl font-bold">{count}</span>
+      <button 
+        onClick={() => setCount(count + stepValue)}
+        className="px-3 py-1 bg-green-500 text-white rounded"
+      >
+        +
+      </button>
+    </div>
+  );
+};
+
+export default Counter;
+\`\`\`
+
+</Tab>
+
+<Tab label="ProgressBar.tsx">
+
+\`\`\`tsx
+const ProgressBar = (props: any) => {
+  const { value = '0', max = '100', color = 'blue', label } = props;
+  
+  const numValue = parseFloat(String(value)) || 0;
+  const numMax = parseFloat(String(max)) || 100;
+  
+  const percentage = Math.min(100, Math.max(0, (numValue / numMax) * 100));
+  const colorClasses = {
+    blue: 'bg-blue-600',
+    green: 'bg-green-600',
+    red: 'bg-red-600',
+    yellow: 'bg-yellow-600',
+    purple: 'bg-purple-600',
+  };
+  
+  return (
+    <div className="my-4">
+      {label && <div className="text-sm font-medium mb-2">{label}</div>}
+      <div className="w-full bg-gray-200 rounded-full h-4">
+        <div 
+          className={\`h-full \${colorClasses[color]} transition-all\`}
+          style={{ width: \`\${percentage}%\` }}
+        >
+          <span className="text-xs text-white font-semibold">
+            {Math.round(percentage)}%
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProgressBar;
+\`\`\`
+
+</Tab>
+
+<Tab label="Alert.tsx">
+
+\`\`\`tsx
+const Alert = ({ children, type = 'info' }: { 
+  children: React.ReactNode; 
+  type?: 'info' | 'warning' | 'error' | 'success' 
+}) => {
+  const colors = {
+    info: 'bg-blue-50 border-blue-200 text-blue-800',
+    warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
+    error: 'bg-red-50 border-red-200 text-red-800',
+    success: 'bg-green-50 border-green-200 text-green-800',
+  };
+
+  return (
+    <div className={\`p-4 border-l-4 rounded \${colors[type]} my-4\`}>
+      {children}
+    </div>
+  );
+};
+
+export default Alert;
+\`\`\`
+
+</Tab>
+
+<Tab label="Card.tsx">
+
+\`\`\`tsx
+const Card = ({ children, title }: { 
+  children: React.ReactNode; 
+  title?: string 
+}) => (
+  <div className="border rounded-lg p-6 my-4 shadow-sm bg-white">
+    {title && <h3 className="text-lg font-semibold mb-3">{title}</h3>}
+    <div className="text-gray-700">{children}</div>
+  </div>
+);
+
+export default Card;
+\`\`\`
+
+</Tab>
+
+<Tab label="Badge.tsx">
+
+\`\`\`tsx
+const Badge = ({ children, color = 'blue' }: { 
+  children: React.ReactNode; 
+  color?: string 
+}) => (
+  <span className={\`inline-block px-3 py-1 text-sm font-semibold 
+    rounded-full bg-\${color}-100 text-\${color}-800 mx-1\`}>
+    {children}
+  </span>
+);
+
+export default Badge;
+\`\`\`
+
+</Tab>
+
+<Tab label="Highlight.tsx">
+
+\`\`\`tsx
+const Highlight = ({ children, color = 'yellow' }: { 
+  children: React.ReactNode; 
+  color?: 'yellow' | 'pink' | 'green' | 'blue' 
+}) => {
+  const colors = {
+    yellow: 'bg-yellow-200 border-yellow-400',
+    pink: 'bg-pink-200 border-pink-400',
+    green: 'bg-green-200 border-green-400',
+    blue: 'bg-blue-200 border-blue-400',
+  };
+  
+  return (
+    <span className={\`px-2 py-1 \${colors[color]} border-b-2 font-medium\`}>
+      {children}
+    </span>
+  );
+};
+
+export default Highlight;
+\`\`\`
+
+</Tab>
+
+<Tab label="YoutubeVideo.tsx">
+
+\`\`\`tsx
+const YoutubeVideo = ({ url, width = '100%', height = '400' }: { 
+  url: string; 
+  width?: string | number;
+  height?: string | number;
+}) => {
+  // Extract video ID from various YouTube URL formats
+  const getVideoId = (videoUrl: string): string | null => {
+    const patterns = [
+      /(?:youtube\\.com\\/watch\\?v=|youtu\\.be\\/|youtube\\.com\\/embed\\/)([^&\\n?#]+)/,
+      /^([a-zA-Z0-9_-]{11})$/ // Direct video ID
+    ];
+    
+    for (const pattern of patterns) {
+      const match = videoUrl.match(pattern);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    return null;
+  };
+
+  const videoId = getVideoId(url);
+
+  if (!videoId) {
+    return (
+      <div className="my-4 p-4 border border-red-300 bg-red-50 rounded text-red-800">
+        Invalid YouTube URL: {url}
+      </div>
+    );
+  }
+
+  return (
+    <div className="my-4 aspect-video w-full max-w-2xl">
+      <iframe
+        width={width}
+        height={height}
+        src={\`https://www.youtube.com/embed/\${videoId}\`}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        className="rounded-lg shadow-lg"
+      />
+    </div>
+  );
+};
+
+export default YoutubeVideo;
+\`\`\`
+
+</Tab>
+
+<Tab label="Collapsible.tsx">
+
+\`\`\`tsx
+import { useState } from 'react';
+
+const Collapsible = ({ children, title, defaultOpen = false }: { 
+  children: React.ReactNode; 
+  title: string; 
+  defaultOpen?: boolean | string;
+}) => {
+  // Parse boolean prop (comes as string from markdown)
+  const initialOpen = typeof defaultOpen === 'string' 
+    ? defaultOpen === 'true' || defaultOpen === 'True' || defaultOpen === '1'
+    : defaultOpen;
+  
+  const [isOpen, setIsOpen] = useState(initialOpen);
+  
+  return (
+    <div className="border border-gray-300 rounded-lg my-4 overflow-hidden">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between text-left font-medium transition"
+      >
+        <span>{title}</span>
+        <span className="text-xl">{isOpen ? '▼' : '▶'}</span>
+      </button>
+      {isOpen && (
+        <div className="p-4 bg-white">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Collapsible;
+\`\`\`
+
+</Tab>
+
+</Tabs>
+`;
+
 function App() {
 	const [mainContent, setMainContent] = useState(DEMO_CONTENT);
 	const [mathContent, setMathContent] = useState(MATH_CONTENT);
 	const [mediaContent, setMediaContent] = useState(MEDIA_CONTENT);
+	const [componentContent, setComponentContent] = useState(COMPONENT_INJECTION_CONTENT);
 	const [customStyleContent, setCustomStyleContent] = useState('# Custom Styled Heading\n\nThis content uses **custom CSS** styles!');
 
 	const [enableMath, setEnableMath] = useState(true);
@@ -111,6 +458,42 @@ function App() {
 			setActiveSection(id);
 		}
 	};
+
+	// Update active section on scroll
+	useEffect(() => {
+		const sectionIds = ['demo', 'cards', 'custom-styling', 'component-injection', 'usage', 'syntax-highlighting', 'features'];
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						setActiveSection(entry.target.id);
+					}
+				});
+			},
+			{
+				rootMargin: '-20% 0px -70% 0px', // Trigger when section is in the upper portion of viewport
+				threshold: 0
+			}
+		);
+
+		// Observe all sections
+		sectionIds.forEach((id) => {
+			const element = document.getElementById(id);
+			if (element) {
+				observer.observe(element);
+			}
+		});
+
+		return () => {
+			sectionIds.forEach((id) => {
+				const element = document.getElementById(id);
+				if (element) {
+					observer.unobserve(element);
+				}
+			});
+		};
+	}, []);
 
 	return (
 		<div className="min-h-screen bg-white py-8 px-4">
@@ -144,6 +527,15 @@ function App() {
 								}`}
 						>
 							Custom Styling
+						</button>
+						<button
+							onClick={() => scrollToSection('component-injection')}
+							className={`block w-full text-left px-3 py-2 text-sm rounded-sm transition ${activeSection === 'component-injection'
+								? 'bg-gray-100 text-gray-900 font-medium'
+								: 'text-gray-600 hover:bg-gray-50'
+								}`}
+						>
+							Custom Component Injection
 						</button>
 						<button
 							onClick={() => scrollToSection('usage')}
@@ -319,6 +711,37 @@ function App() {
 						</div>
 					</section>
 
+					{/* Component Injection */}
+					<section id="component-injection" className="mb-8 pb-8 border-b border-gray-200">
+						<h2 className="text-2xl font-light mb-6 text-gray-900">
+							Custom Component Injection
+						</h2>
+						<p className="text-gray-600 mb-8 text-sm">
+							Inject custom React components directly into your markdown for enhanced interactivity
+						</p>
+
+						<div className="border border-gray-200 rounded-md">
+							<div className="p-8">
+								<MarkdownRenderer
+									content={componentContent}
+									enableMath={enableMath}
+									enableGfm={enableGfm}
+									customComponents={customComponents}
+								/>
+							</div>
+						</div>
+
+						<div className="mt-6">
+							<h3 className="text-gray-900 mb-3">Example Usage</h3>
+							<div className="rounded-md overflow-hidden">
+								<MarkdownRenderer
+									content={"```tsx\n// Define your custom components\nconst Alert = ({ children, type }) => (\n  <div className={`alert alert-${type}`}>\n    {children}\n  </div>\n);\n\n// Pass them to the editor\n<MarkdownRenderer\n  content={markdown}\n  customComponents={{\n    Alert,\n    Badge,\n    Card,\n  }}\n/>\n\n// Use them in markdown\n<Alert type=\"info\">\n  This is a custom component!\n</Alert>\n```"}
+									enableGfm={true}
+								/>
+							</div>
+						</div>
+					</section>
+
 					{/* Usage */}
 					<section id="usage" className="mb-8 pb-8 border-b border-gray-200">
 						<h2 className="text-2xl font-light mb-6 text-gray-900">Usage</h2>
@@ -445,13 +868,13 @@ function App() {
 							</div>
 						</div>
 					</section>
-
-					{/* Footer */}
-					<footer className="text-center text-gray-500 py-12 text-sm">
-						<p>Built with React and TypeScript by Aki with ❤️ with the help of LLM.</p>
-					</footer>
 				</div>
 			</div>
+
+			{/* Footer */}
+			<footer className="text-center text-gray-500 py-12 text-sm max-w-7xl mx-auto">
+				<p>Built with React and TypeScript by Aki with ❤️ with the help of LLM.</p>
+			</footer>
 		</div>
 	);
 }

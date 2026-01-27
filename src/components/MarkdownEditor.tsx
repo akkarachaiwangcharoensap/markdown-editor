@@ -21,6 +21,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     enableGfm = true,
     enableMath = true,
     syntaxHighlighter,
+    customComponents,
 }) => {
     return (
         <div className={`flex gap-4 ${containerClassName}`}>
@@ -43,6 +44,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                     enableGfm={enableGfm}
                     enableMath={enableMath}
                     syntaxHighlighter={syntaxHighlighter}
+                    customComponents={customComponents}
                 />
             )}
         </div>

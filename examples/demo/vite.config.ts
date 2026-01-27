@@ -6,7 +6,13 @@ export default defineConfig({
     plugins: [react()],
     resolve: {
         alias: {
-            '@yourname/markdown-editor': path.resolve(__dirname, '../../src'),
+            '@akiwiki/markdown-editor': path.resolve(__dirname, '../../src'),
+        },
+    },
+    server: {
+        fs: {
+            // Allow serving files from the node_modules directory
+            allow: ['..', '../..'],
         },
     },
 });

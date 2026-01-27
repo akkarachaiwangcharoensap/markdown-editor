@@ -23,6 +23,7 @@ export const EditInPlaceMarkdown: React.FC<EditInPlaceMarkdownProps> = ({
     showEditIcon = true,
     autoFocus = true,
     syntaxHighlighter,
+    customComponents,
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [localValue, setLocalValue] = useState(value);
@@ -147,6 +148,7 @@ export const EditInPlaceMarkdown: React.FC<EditInPlaceMarkdownProps> = ({
                         enableGfm={enableGfm}
                         enableMath={enableMath}
                         syntaxHighlighter={syntaxHighlighter}
+                        customComponents={customComponents}
                     />
                 </div>
             )}

@@ -1,17 +1,48 @@
 import React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { MarkdownStyles, SyntaxHighlighterConfig } from '../types';
+import { MarkdownStyles, SyntaxHighlighterConfig, ComponentInjection } from '../types';
 import { defaultSyntaxHighlighter } from '../config/defaultStyles';
+
+/**
+ * Helper function to check if children contain custom React components
+ */
+const hasCustomComponent = (child: any, customComponentTypes: Set<React.ComponentType<any>>): boolean => {
+    if (React.isValidElement(child) && child.type && typeof child.type !== 'string' && customComponentTypes.has(child.type as React.ComponentType<any>)) {
+        return true;
+    }
+    if (Array.isArray(child)) {
+        return child.some(c => hasCustomComponent(c, customComponentTypes));
+    }
+    return false;
+};
 
 /**
  * Factory Pattern for creating styled markdown components
  */
 export class MarkdownComponentFactory {
-    static createComponents(styles: MarkdownStyles, syntaxHighlighter?: SyntaxHighlighterConfig) {
+    static createComponents(
+        styles: MarkdownStyles,
+        syntaxHighlighter?: SyntaxHighlighterConfig,
+        customComponents?: ComponentInjection
+    ) {
         const HighlighterComponent = syntaxHighlighter?.component ?? SyntaxHighlighter;
         const highlighterStyle = syntaxHighlighter?.style ?? defaultSyntaxHighlighter.style;
         const highlighterProps = syntaxHighlighter?.props || {};
         const highlighterClassName = syntaxHighlighter?.className ?? defaultSyntaxHighlighter.className;
+
+        // Convert custom components to lowercase keys for HTML tag matching
+        const lowercaseCustomComponents: Record<string, React.ComponentType<any>> = {};
+        const customComponentTypes = new Set<React.ComponentType<any>>();
+
+        if (customComponents) {
+            Object.entries(customComponents).forEach(([key, Component]) => {
+                // Add both original case and lowercase
+                lowercaseCustomComponents[key.toLowerCase()] = Component;
+                lowercaseCustomComponents[key] = Component;
+                customComponentTypes.add(Component);
+            });
+        }
+
         return {
             h1: ({ children, ...props }: any) => (
                 <h1 className={styles.h1} {...props}>{children}</h1>
@@ -31,9 +62,14 @@ export class MarkdownComponentFactory {
             h6: ({ children, ...props }: any) => (
                 <h6 className={styles.h6} {...props}>{children}</h6>
             ),
-            p: ({ children, ...props }: any) => (
-                <p className={styles.p} {...props}>{children}</p>
-            ),
+            p: ({ children, ...props }: any) => {
+                // If paragraph contains any custom components, unwrap to avoid nesting issues
+                if (hasCustomComponent(children, customComponentTypes)) {
+                    return <>{children}</>;
+                }
+
+                return <p className={styles.p} {...props}>{children}</p>;
+            },
             a: ({ children, href, ...props }: any) => (
                 <a
                     href={href}
@@ -138,6 +174,8 @@ export class MarkdownComponentFactory {
                 }
                 return <span className={className} {...props}>{children}</span>;
             },
+            // Merge custom components (both original and lowercase keys for flexibility)
+            ...lowercaseCustomComponents,
         };
     }
 }
