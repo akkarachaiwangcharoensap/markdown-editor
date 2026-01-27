@@ -13,7 +13,7 @@
     "scripts": {
         "build": "rollup -c",
         "lint": "eslint src",
-        "type-check": "tsc --noEmit",
+        "type-check": "npx tsc --noEmit",
         "prepublishOnly": "npm run build && npm test",
         "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest",
         "test:watch": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest --watch",
