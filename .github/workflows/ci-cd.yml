@@ -146,7 +146,7 @@ jobs:
         run: npm ci
       
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist/
@@ -174,7 +174,7 @@ jobs:
     
     steps:
       - name: Download demo artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: demo-dist
           path: ./dist
