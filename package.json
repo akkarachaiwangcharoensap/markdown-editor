@@ -12,7 +12,7 @@
     "type": "module",
     "scripts": {
         "build": "rollup -c",
-        "lint": "eslint src --ext .ts,.tsx",
+        "lint": "eslint src",
         "type-check": "tsc --noEmit",
         "prepublishOnly": "npm run build && npm test",
         "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest",
