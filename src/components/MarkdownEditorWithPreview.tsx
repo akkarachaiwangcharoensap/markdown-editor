@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import { TextEditor } from './TextEditor';
 import { MarkdownRenderer } from './MarkdownRenderer';
 import { MarkdownEditorWithPreviewProps, ViewMode } from '../types';

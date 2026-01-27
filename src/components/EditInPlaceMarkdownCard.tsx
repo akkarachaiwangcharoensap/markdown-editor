@@ -14,16 +14,17 @@ interface EditInPlaceMarkdownCardProps extends EditInPlaceMarkdownProps {
 export const EditInPlaceMarkdownCard: React.FC<EditInPlaceMarkdownCardProps> = ({
     title,
     showSaveIndicator = true,
+    onChange: propsOnChange,
     ...props
 }) => {
     const [lastSaved, setLastSaved] = React.useState<Date | null>(null);
 
     const handleChange = React.useCallback((value: string) => {
-        props.onChange?.(value);
+        propsOnChange?.(value);
         if (showSaveIndicator) {
             setLastSaved(new Date());
         }
-    }, [props.onChange, showSaveIndicator]);
+    }, [propsOnChange, showSaveIndicator]);
 
     return (
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">

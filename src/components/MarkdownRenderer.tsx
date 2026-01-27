@@ -24,7 +24,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     const styleManager = StyleManager.getInstance();
     const mergedStyles = useMemo(
         () => styleManager.mergeStyles(styles),
-        [styles]
+        [styles, styleManager]
     );
 
     const components = useMemo(

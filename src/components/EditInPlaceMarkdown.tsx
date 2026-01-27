@@ -35,19 +35,19 @@ export const EditInPlaceMarkdown: React.FC<EditInPlaceMarkdownProps> = ({
         setLocalValue(value);
     }, [value]);
 
-    // Handle click outside to exit edit mode
-    useClickOutside(containerRef, () => {
-        if (isEditing) {
-            handleSave();
-        }
-    });
-
     const handleSave = useCallback(() => {
         setIsEditing(false);
         if (onChange && localValue !== value) {
             onChange(localValue);
         }
     }, [localValue, value, onChange]);
+
+    // Handle click outside to exit edit mode
+    useClickOutside(containerRef, () => {
+        if (isEditing) {
+            handleSave();
+        }
+    });
 
     const handleEdit = useCallback(() => {
         setIsEditing(true);
