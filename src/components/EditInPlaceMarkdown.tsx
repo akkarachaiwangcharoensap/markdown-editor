@@ -27,7 +27,7 @@ export const EditInPlaceMarkdown: React.FC<EditInPlaceMarkdownProps> = ({
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [localValue, setLocalValue] = useState(value);
-    const containerRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Sync external value changes
@@ -43,7 +43,7 @@ export const EditInPlaceMarkdown: React.FC<EditInPlaceMarkdownProps> = ({
     }, [localValue, value, onChange]);
 
     // Handle click outside to exit edit mode
-    useClickOutside(containerRef, () => {
+    useClickOutside(containerRef as React.RefObject<HTMLDivElement>, () => {
         if (isEditing) {
             handleSave();
         }
