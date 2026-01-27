@@ -1,0 +1,27 @@
+# Code owners for the markdown-editor repository
+# These users will be automatically requested for review when PRs modify matching files
+
+# Default owner for everything
+* @akkarachaiwangcharoensap
+
+# Source code
+/src/** @akkarachaiwangcharoensap
+
+# Tests
+/__tests__/** @akkarachaiwangcharoensap
+
+# Build configuration
+/rollup.config.js @akkarachaiwangcharoensap
+/tsconfig.json @akkarachaiwangcharoensap
+/jest.config.js @akkarachaiwangcharoensap
+
+# Documentation
+/README.md @akkarachaiwangcharoensap
+/COMPONENT_INJECTION.md @akkarachaiwangcharoensap
+
+# CI/CD
+/.github/** @akkarachaiwangcharoensap
+
+# Package files
+/package.json @akkarachaiwangcharoensap
+/package-lock.json @akkarachaiwangcharoensap

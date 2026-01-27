@@ -1,0 +1,119 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  # Automated checks for pull requests
+  pr-validation:
+    name: Validate PR
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Check for package-lock.json changes
+        run: |
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q "package-lock.json"; then
+            echo "✅ package-lock.json is included in changes"
+          fi
+      
+      - name: Run all tests
+        run: npm test
+      
+      - name: Build library
+        run: npm run build
+      
+      - name: Check bundle size
+        run: |
+          BUNDLE_SIZE=$(du -sh dist | cut -f1)
+          echo "📦 Bundle size: $BUNDLE_SIZE"
+          echo "bundle_size=$BUNDLE_SIZE" >> $GITHUB_OUTPUT
+      
+      - name: Validate exports
+        run: |
+          if [ -f "dist/index.js" ] && [ -f "dist/index.d.ts" ]; then
+            echo "✅ All required exports are present"
+          else
+            echo "❌ Missing required exports"
+            exit 1
+          fi
+
+  # Check code quality
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run type check
+        run: npm run type-check
+      
+      - name: Run linter
+        run: npm run lint
+      
+      - name: Check for console.log statements
+        run: |
+          if grep -r "console\.log" src/; then
+            echo "⚠️  Found console.log statements in source code"
+            grep -rn "console\.log" src/ || true
+          else
+            echo "✅ No console.log statements found"
+          fi
+
+  # Test coverage check
+  coverage:
+    name: Test Coverage
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Generate coverage
+        run: npm run test:coverage
+      
+      - name: Coverage report
+        run: |
+          echo "📊 Test Coverage Summary:"
+          cat coverage/lcov-report/index.html | grep -A 5 "coverage" || echo "Coverage report generated"
+      
+      - name: Comment coverage on PR
+        uses: romeovs/lcov-reporter-action@v0.3.1
+        with:
+          lcov-file: ./coverage/lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
