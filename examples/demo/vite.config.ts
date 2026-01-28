@@ -4,7 +4,14 @@ import path from 'path';
 
 export default defineConfig({
     base: '/markdown-editor/',
-    plugins: [react()],
+    plugins: [
+        react({
+            // Disable React Fast Refresh in production builds
+            babel: {
+                compact: false,
+            },
+        }),
+    ],
     resolve: {
         alias: {
             '@akiwiki/markdown-editor': path.resolve(__dirname, '../../src'),
