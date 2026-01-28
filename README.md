@@ -4,16 +4,18 @@ A customizable React markdown editor component library built on [react-markdown]
 
 ## Features
 
+- **Edit-in-Place** - Click to edit, click outside to save with auto-resize
+- **Lock Toggle** - Protect content with read-only mode (controlled or uncontrolled)
 - **Fully Customizable Styles** - Style each markdown element independently
-- **Custom Component Injection** - Embed React components directly in markdown
+- **Custom Component Injection** - Embed interactive React components directly in markdown
 - **XSS Protection** - Built-in HTML sanitization using rehype-sanitize
 - **Real-time Preview** - Live markdown rendering with debounced updates
 - **Github-Flavoured Markdown (GFM) Support** - Tables, strikethrough, task lists, autolinks
 - **LaTeX Math** - KaTeX support via remark-math and rehype-katex
 - **Syntax Highlighting** - Code blocks with customizable highlighter
-- **Click-to-Edit** - Inline editing with auto-save on blur
 - **TypeScript** - Full type safety
-- **Tested** - Comprehensive test suite with 56 passing tests
+- **Tested** - Comprehensive test suite with 56+ passing tests
+- **Lightweight** - Minimal dependencies, optimized bundle size
 
 ## Installation
 
@@ -30,7 +32,7 @@ import 'katex/dist/katex.min.css';
 
 ## Demo
 
-[View Live Demo](https://akiwiki.com/projects/markdown-editor)
+🚀 **[View Live Demo](https://akkarachaiwangcharoensap.github.io/markdown-editor/)**
 
 To run the interactive demo locally:
 
@@ -157,6 +159,50 @@ import { EditInPlaceMarkdownCard } from '@akiwiki/markdown-editor';
 ### Keyboard Shortcuts
 
 - **Escape**: Cancel and revert changes
+
+### Lock Toggle
+
+Protect content from accidental edits with the lock toggle feature:
+
+```tsx
+import { EditInPlaceMarkdown } from '@akiwiki/markdown-editor';
+
+function ProtectedContent() {
+  const [content, setContent] = useState('# Important Content');
+  const [isLocked, setIsLocked] = useState(false);
+  
+  return (
+    <EditInPlaceMarkdown
+      value={content}
+      onChange={setContent}
+      locked={isLocked}
+      onLockedChange={setIsLocked}
+      showLockToggle={true}  // Show lock/unlock button
+    />
+  );
+}
+```
+
+**Features:**
+- 🔒 Visual lock/unlock button with icons
+- Controlled or uncontrolled lock state
+- Prevents editing when locked
+- Customizable lock button visibility
+- Color-coded feedback (gray background when locked)
+
+**Props:**
+- `locked?: boolean` - Controlled lock state
+- `onLockedChange?: (locked: boolean) => void` - Lock state change callback
+- `showLockToggle?: boolean` - Show/hide lock button (default: `false`)
+
+**Uncontrolled Mode:**
+```tsx
+<EditInPlaceMarkdown
+  value={content}
+  onChange={setContent}
+  showLockToggle={true}  // Component manages lock state internally
+/>
+```
 
 ## Custom Component Injection
 
