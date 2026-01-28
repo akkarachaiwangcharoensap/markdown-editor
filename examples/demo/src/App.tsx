@@ -6,6 +6,8 @@ import {
 } from '@akiwiki/markdown-editor';
 import 'katex/dist/katex.min.css';
 import { customComponents } from './CustomComponents';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub, faNpm } from '@fortawesome/free-brands-svg-icons';
 
 const DEMO_CONTENT = `# Interactive Markdown Editor
 
@@ -95,10 +97,7 @@ const MEDIA_CONTENT = `# Image Examples
 Images are automatically rendered with reasonable sizing.
 `;
 
-const COMPONENT_INJECTION_CONTENT = `# Custom Component Injection
-
-Inject interactive React components directly into your markdown using PascalCase syntax.
-
+const COMPONENT_INJECTION_CONTENT = `
 <Tabs>
 
 <Tab label="Output">
@@ -446,6 +445,8 @@ function App() {
 	const [mediaContent, setMediaContent] = useState(MEDIA_CONTENT);
 	const [componentContent, setComponentContent] = useState(COMPONENT_INJECTION_CONTENT);
 	const [customStyleContent, setCustomStyleContent] = useState('# Custom Styled Heading\n\nThis content uses **custom CSS** styles!');
+	const [lockableContent, setLockableContent] = useState('# Lockable Content\n\nClick the **lock icon** in the top-right to toggle read-only mode.\n\n- When unlocked 🔓, you can click to edit\n- When locked 🔒, editing is disabled\n\nTry it now!');
+	const [isLocked, setIsLocked] = useState(false);
 
 	const [enableMath, setEnableMath] = useState(true);
 	const [enableGfm, setEnableGfm] = useState(true);
@@ -461,7 +462,7 @@ function App() {
 
 	// Update active section on scroll
 	useEffect(() => {
-		const sectionIds = ['demo', 'cards', 'custom-styling', 'component-injection', 'usage', 'syntax-highlighting', 'features'];
+		const sectionIds = ['demo', 'lock-toggle', 'cards', 'custom-styling', 'component-injection', 'usage', 'syntax-highlighting', 'features'];
 
 		const observer = new IntersectionObserver(
 			(entries) => {
@@ -497,6 +498,36 @@ function App() {
 
 	return (
 		<div className="min-h-screen bg-white py-8 px-4">
+			{/* Top Links */}
+			<div className="max-w-7xl mx-auto mb-8 flex gap-4">
+				<a
+					href="https://github.com/akkarachaiwangcharoensap/markdown-editor"
+					target="_blank"
+					rel="noopener noreferrer"
+					className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition"
+				>
+					<FontAwesomeIcon icon={faGithub} className="w-4 h-4" />
+					Source Code
+				</a>
+				<a
+					href="https://github.com/akkarachaiwangcharoensap/markdown-editor/issues"
+					target="_blank"
+					rel="noopener noreferrer"
+					className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition"
+				>
+					<FontAwesomeIcon icon={faGithub} className="w-4 h-4" />
+					Issues
+				</a>
+				<a
+					href="https://www.npmjs.com/package/@akiwiki/markdown-editor"
+					target="_blank"
+					rel="noopener noreferrer"
+					className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition"
+				>
+					<FontAwesomeIcon icon={faNpm} className="w-4 h-4 text-red-600" />
+					NPM Package
+				</a>
+			</div>
 			<div className="max-w-7xl mx-auto flex gap-8">
 				{/* Side Navigation */}
 				<aside className="hidden lg:block w-48 flex-shrink-0">
@@ -509,6 +540,15 @@ function App() {
 								}`}
 						>
 							Interactive Demo
+						</button>
+						<button
+							onClick={() => scrollToSection('lock-toggle')}
+							className={`block w-full text-left px-3 py-2 text-sm rounded-sm transition ${activeSection === 'lock-toggle'
+								? 'bg-gray-100 text-gray-900 font-medium'
+								: 'text-gray-600 hover:bg-gray-50'
+								}`}
+						>
+							Lock Toggle
 						</button>
 						<button
 							onClick={() => scrollToSection('cards')}
@@ -602,18 +642,18 @@ function App() {
 					</div>
 
 					{/* Feature Highlights */}
-					<div className="grid md:grid-cols-3 gap-6 mb-8 pb-8 border-b border-gray-200">
+					<div className="grid md:grid-cols-3 gap-2 mb-8 pb-8 border-b border-gray-200">
 						<div>
 							<h3 className="text-sm font-medium mb-2 text-gray-900">Click to Edit</h3>
 							<p className="text-sm text-gray-600 leading-relaxed">Inline editing with automatic save on blur</p>
 						</div>
 						<div>
-							<h3 className="text-sm font-medium mb-2 text-gray-900">LaTeX Support</h3>
-							<p className="text-sm text-gray-600 leading-relaxed">Render mathematical expressions inline and as blocks</p>
+							<h3 className="text-sm font-medium mb-2 text-gray-900">Lock Toggle</h3>
+							<p className="text-sm text-gray-600 leading-relaxed">Lock content to prevent accidental edits</p>
 						</div>
 						<div>
-							<h3 className="text-sm font-medium mb-2 text-gray-900">Customizable</h3>
-							<p className="text-sm text-gray-600 leading-relaxed">Apply custom styles to any element</p>
+							<h3 className="text-sm font-medium mb-2 text-gray-900">LaTeX Support</h3>
+							<p className="text-sm text-gray-600 leading-relaxed">Render mathematical expressions inline and as blocks</p>
 						</div>
 					</div>
 
@@ -634,6 +674,55 @@ function App() {
 						</div>
 					</section>
 
+					{/* Lock Toggle Example */}
+					<section id="lock-toggle" className="mb-8 pb-8 border-b border-gray-200">
+						<h2 className="text-2xl font-light mb-6 text-gray-900">
+							Lock Toggle
+						</h2>
+						<p className="text-gray-600 mb-8 text-sm">
+							Lock content to prevent accidental edits. Perfect for protecting important content or creating read-only views.
+						</p>
+
+						<div className="grid md:grid-cols-2 gap-2">
+							<div>
+								<h3 className="text-sm font-medium mb-4 text-gray-700">Lock Example</h3>
+								<div className="border border-gray-200 rounded-md p-6">
+									<EditInPlaceMarkdown
+										value={lockableContent}
+										onChange={setLockableContent}
+										locked={isLocked}
+										onLockedChange={setIsLocked}
+										showLockToggle={true}
+										enableMath={enableMath}
+										enableGfm={enableGfm}
+									/>
+									<div className="mt-4 text-xs text-gray-500">
+										Current state: {isLocked ? '🔒 Locked (read-only)' : '🔓 Unlocked (editable)'}
+									</div>
+								</div>
+							</div>
+
+							<div>
+								<h3 className="text-sm font-medium text-gray-700">Code Example</h3>
+								<div className="rounded-md overflow-hidden">
+									<MarkdownRenderer
+										content={"```tsx\nconst [isLocked, setIsLocked] = useState(false);\n\n<EditInPlaceMarkdown\n  value={content}\n  onChange={setContent}\n  locked={isLocked}\n  onLockedChange={setIsLocked}\n  showLockToggle={true}\n/>\n```"}
+										enableGfm={true}
+									/>
+								</div>
+								<div className="mt-4 text-sm text-gray-600">
+									<h4 className="font-medium text-gray-900 mb-2">Features:</h4>
+									<ul className="space-y-1 list-disc list-inside">
+										<li>Controlled or uncontrolled mode</li>
+										<li>Visual indicators (🔒/🔓 icons)</li>
+										<li>Optional toggle button</li>
+										<li>Prevents editing when locked</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</section>
+
 					{/* Card Examples */}
 					<section id="cards" className="mb-8 pb-8 border-b border-gray-200">
 						<h2 className="text-2xl font-light mb-6 text-gray-900">
@@ -643,7 +732,7 @@ function App() {
 							Pre-styled components with headers and save indicators
 						</p>
 
-						<div className="grid md:grid-cols-2 gap-6">
+						<div className="grid md:grid-cols-2 gap-2">
 							<EditInPlaceMarkdownCard
 								title="Mathematical Expressions"
 								value={mathContent}
@@ -675,7 +764,7 @@ function App() {
 							Override default styles with custom CSS classes
 						</p>
 
-						<div className="grid md:grid-cols-2 gap-6">
+						<div className="grid md:grid-cols-2 gap-2">
 							<div className="border border-gray-200 rounded-md p-6">
 								<h3 className="text-sm font-medium mb-4 text-gray-700">Default</h3>
 								<MarkdownRenderer
@@ -720,8 +809,8 @@ function App() {
 							Inject custom React components directly into your markdown for enhanced interactivity
 						</p>
 
-						<div className="border border-gray-200 rounded-md">
-							<div className="p-8">
+						<div className="border border-gray-200 rounded">
+							<div className="p-4">
 								<MarkdownRenderer
 									content={componentContent}
 									enableMath={enableMath}
@@ -788,7 +877,7 @@ function App() {
 							Apply custom CSS classes to code blocks via the syntaxHighlighter prop
 						</p>
 
-						<div className="grid md:grid-cols-2 gap-6">
+						<div className="grid md:grid-cols-2 gap-2">
 							<div className="border border-gray-200 rounded-md p-6">
 								<h3 className="text-sm font-medium mb-4 text-gray-700">Default (text-sm)</h3>
 								<MarkdownRenderer
@@ -827,6 +916,20 @@ function App() {
 							<div className="flex items-start gap-3">
 								<span className="text-gray-400 mt-0.5">→</span>
 								<div>
+									<h4 className="font-medium text-gray-900">Edit-in-Place</h4>
+									<p className="text-gray-600">Click to edit, click outside to save</p>
+								</div>
+							</div>
+							<div className="flex items-start gap-3">
+								<span className="text-gray-400 mt-0.5">→</span>
+								<div>
+									<h4 className="font-medium text-gray-900">Lock Toggle</h4>
+									<p className="text-gray-600">Protect content with read-only mode</p>
+								</div>
+							</div>
+							<div className="flex items-start gap-3">
+								<span className="text-gray-400 mt-0.5">→</span>
+								<div>
 									<h4 className="font-medium text-gray-900">GitHub Flavored Markdown</h4>
 									<p className="text-gray-600">Tables, strikethrough, task lists</p>
 								</div>
@@ -841,29 +944,43 @@ function App() {
 							<div className="flex items-start gap-3">
 								<span className="text-gray-400 mt-0.5">→</span>
 								<div>
-									<h4 className="font-medium text-gray-900">Images</h4>
-									<p className="text-gray-600">Automatic sizing and rendering</p>
+									<h4 className="font-medium text-gray-900">Custom Components</h4>
+									<p className="text-gray-600">Inject React components into markdown</p>
 								</div>
 							</div>
 							<div className="flex items-start gap-3">
 								<span className="text-gray-400 mt-0.5">→</span>
 								<div>
 									<h4 className="font-medium text-gray-900">Custom Styles</h4>
-									<p className="text-gray-600">CSS class overrides</p>
+									<p className="text-gray-600">CSS class overrides for all elements</p>
+								</div>
+							</div>
+							<div className="flex items-start gap-3">
+								<span className="text-gray-400 mt-0.5">→</span>
+								<div>
+									<h4 className="font-medium text-gray-900">Syntax Highlighting</h4>
+									<p className="text-gray-600">Beautiful code blocks with customization</p>
 								</div>
 							</div>
 							<div className="flex items-start gap-3">
 								<span className="text-gray-400 mt-0.5">→</span>
 								<div>
 									<h4 className="font-medium text-gray-900">TypeScript</h4>
-									<p className="text-gray-600">Full type definitions</p>
+									<p className="text-gray-600">Full type definitions included</p>
 								</div>
 							</div>
 							<div className="flex items-start gap-3">
 								<span className="text-gray-400 mt-0.5">→</span>
 								<div>
 									<h4 className="font-medium text-gray-900">Auto-resize</h4>
-									<p className="text-gray-600">Editor adapts to content</p>
+									<p className="text-gray-600">Editor adapts to content dynamically</p>
+								</div>
+							</div>
+							<div className="flex items-start gap-3">
+								<span className="text-gray-400 mt-0.5">→</span>
+								<div>
+									<h4 className="font-medium text-gray-900">Lightweight</h4>
+									<p className="text-gray-600">Minimal dependencies, optimized bundle</p>
 								</div>
 							</div>
 						</div>
