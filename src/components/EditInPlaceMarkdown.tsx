@@ -149,18 +149,27 @@ export const EditInPlaceMarkdown: React.FC<EditInPlaceMarkdownProps> = ({
             onClick={handleEdit}
             className={`group relative ${locked ? 'cursor-default' : 'cursor-pointer'} transition-all ${!locked && 'hover:bg-gray-50'} rounded-lg ${containerClassName}`}
         >
-            {showLockToggle && (
-                <button
-                    onClick={handleLockToggle}
-                    className={`absolute top-2 right-2 z-10 rounded p-1 border transition-all ${locked
-                            ? 'bg-gray-100 border-gray-300 hover:bg-gray-200'
-                            : 'bg-white border-gray-200 hover:border-gray-300'
-                        }`}
-                    title={locked ? 'Unlock to edit' : 'Lock to prevent editing'}
-                >
-                    <span className="text-sm">{locked ? '🔒' : '🔓'}</span>
-                </button>
-            )}
+            {/* Top-right controls group */}
+            <div className="absolute top-2 right-2 z-50 flex items-center gap-2">
+                {showEditIcon && !locked && (
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white rounded p-2 shadow-sm">
+                        <span className="text-sm text-gray-600">✏️ Click to edit</span>
+                    </div>
+                )}
+                {showLockToggle && (
+                    <button
+                        onClick={handleLockToggle}
+                        className={`rounded p-1 border transition-all ${locked
+                                ? 'bg-gray-100 border-gray-300 hover:bg-gray-200'
+                                : 'bg-white border-gray-200 hover:border-gray-300'
+                            }`}
+                        title={locked ? 'Unlock to edit' : 'Lock to prevent editing'}
+                    >
+                        <span className="text-sm">{locked ? '🔒' : '🔓'}</span>
+                    </button>
+                )}
+            </div>
+            
             {isEmpty ? (
                 <div className={`p-4 text-gray-400 italic flex items-center gap-2 min-h-[86px] border-2 border-dashed border-gray-300 rounded ${previewClassName}`}>
                     {showEditIcon && !locked && <span className="text-sm">✏️</span>}
@@ -169,11 +178,6 @@ export const EditInPlaceMarkdown: React.FC<EditInPlaceMarkdownProps> = ({
                 </div>
             ) : (
                 <div className="relative">
-                    {showEditIcon && !locked && (
-                        <div className={`absolute top-2 ${showLockToggle ? 'right-10' : 'right-2'} opacity-0 group-hover:opacity-100 transition-opacity bg-white rounded p-2 shadow-sm`}>
-                            <span className="text-sm text-gray-600">✏️ Click to edit</span>
-                        </div>
-                    )}
                     <MarkdownRenderer
                         content={localValue}
                         styles={styles}
