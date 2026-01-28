@@ -103,4 +103,7 @@ export interface EditInPlaceMarkdownProps {
     autoFocus?: boolean;
     syntaxHighlighter?: SyntaxHighlighterConfig;
     customComponents?: ComponentInjection;
+    locked?: boolean;
+    onLockedChange?: (locked: boolean) => void;
+    showLockToggle?: boolean;
 }

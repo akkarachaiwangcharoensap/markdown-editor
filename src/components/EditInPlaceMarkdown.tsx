@@ -24,11 +24,19 @@ export const EditInPlaceMarkdown: React.FC<EditInPlaceMarkdownProps> = ({
     autoFocus = true,
     syntaxHighlighter,
     customComponents,
+    locked: controlledLocked,
+    onLockedChange,
+    showLockToggle = false,
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [localValue, setLocalValue] = useState(value);
+    const [internalLocked, setInternalLocked] = useState(controlledLocked ?? false);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Determine if locked is controlled or uncontrolled
+    const isLockedControlled = controlledLocked !== undefined;
+    const locked = isLockedControlled ? controlledLocked : internalLocked;
 
     // Sync external value changes
     useEffect(() => {
@@ -50,8 +58,21 @@ export const EditInPlaceMarkdown: React.FC<EditInPlaceMarkdownProps> = ({
     });
 
     const handleEdit = useCallback(() => {
-        setIsEditing(true);
-    }, []);
+        if (!locked) {
+            setIsEditing(true);
+        }
+    }, [locked]);
+
+    const handleLockToggle = useCallback((e: React.MouseEvent) => {
+        e.stopPropagation();
+        const newLockedState = !locked;
+        if (!isLockedControlled) {
+            setInternalLocked(newLockedState);
+        }
+        if (onLockedChange) {
+            onLockedChange(newLockedState);
+        }
+    }, [locked, isLockedControlled, onLockedChange]);
 
     const handleChange = useCallback((newValue: string) => {
         setLocalValue(newValue);
@@ -126,24 +147,37 @@ export const EditInPlaceMarkdown: React.FC<EditInPlaceMarkdownProps> = ({
         <div
             ref={containerRef}
             onClick={handleEdit}
-            className={`group relative cursor-pointer transition-all hover:bg-gray-50 rounded-lg ${containerClassName}`}
+            className={`group relative ${locked ? 'cursor-default' : 'cursor-pointer'} transition-all ${!locked && 'hover:bg-gray-50'} rounded-lg ${containerClassName}`}
         >
+            {showLockToggle && (
+                <button
+                    onClick={handleLockToggle}
+                    className={`absolute top-2 right-2 z-10 rounded p-1 border transition-all ${locked
+                            ? 'bg-gray-100 border-gray-300 hover:bg-gray-200'
+                            : 'bg-white border-gray-200 hover:border-gray-300'
+                        }`}
+                    title={locked ? 'Unlock to edit' : 'Lock to prevent editing'}
+                >
+                    <span className="text-sm">{locked ? '🔒' : '🔓'}</span>
+                </button>
+            )}
             {isEmpty ? (
-                <div className={`p-4 text-gray-400 italic flex items-center gap-2 min-h-[100px] border-2 border-dashed border-gray-300 rounded-lg ${previewClassName}`}>
-                    {showEditIcon && <span className="text-xl">✏️</span>}
-                    <span>{emptyText}</span>
+                <div className={`p-4 text-gray-400 italic flex items-center gap-2 min-h-[86px] border-2 border-dashed border-gray-300 rounded ${previewClassName}`}>
+                    {showEditIcon && !locked && <span className="text-sm">✏️</span>}
+                    {locked && <span className="text-sm">🔒</span>}
+                    <span>{locked ? 'Locked - click lock icon to edit' : emptyText}</span>
                 </div>
             ) : (
                 <div className="relative">
-                    {showEditIcon && (
-                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white rounded p-2 shadow-sm">
+                    {showEditIcon && !locked && (
+                        <div className={`absolute top-2 ${showLockToggle ? 'right-10' : 'right-2'} opacity-0 group-hover:opacity-100 transition-opacity bg-white rounded p-2 shadow-sm`}>
                             <span className="text-sm text-gray-600">✏️ Click to edit</span>
                         </div>
                     )}
                     <MarkdownRenderer
                         content={localValue}
                         styles={styles}
-                        className={`p-4 rounded-lg border-2 border-transparent hover:border-gray-300 transition-all ${previewClassName}`}
+                        className={`p-4 rounded-lg border-2 border-transparent ${!locked && 'hover:border-gray-300'} transition-all ${previewClassName}`}
                         sanitize={sanitize}
                         enableGfm={enableGfm}
                         enableMath={enableMath}
