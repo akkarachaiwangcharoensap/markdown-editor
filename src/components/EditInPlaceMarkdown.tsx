@@ -158,6 +158,7 @@ export const EditInPlaceMarkdown: React.FC<EditInPlaceMarkdownProps> = ({
                 )}
                 {showLockToggle && (
                     <button
+                        type="button"
                         onClick={handleLockToggle}
                         className={`rounded p-1 border transition-all ${locked
                                 ? 'bg-gray-100 border-gray-300 hover:bg-gray-200'
