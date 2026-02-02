@@ -81,7 +81,7 @@ jobs:
         run: npm run build
       
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: dist
           path: dist/
@@ -118,7 +118,7 @@ jobs:
         run: npm run build
       
       - name: Upload demo artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: demo-dist
           path: examples/demo/dist/
