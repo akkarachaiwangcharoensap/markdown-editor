@@ -112,7 +112,7 @@ jobs:
           cat coverage/lcov-report/index.html | grep -A 5 "coverage" || echo "Coverage report generated"
       
       - name: Comment coverage on PR
-        uses: romeovs/lcov-reporter-action@v0.3.1
+        uses: romeovs/lcov-reporter-action@v0.4.0
         with:
           lcov-file: ./coverage/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
