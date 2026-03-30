@@ -64,7 +64,7 @@
         "jest": "^30.3.0",
         "jest-environment-jsdom": "^30.3.0",
         "postcss": "^8.5.8",
-        "rollup": "^4.60.0",
+        "rollup": "^4.60.1",
         "rollup-plugin-peer-deps-external": "^2.2.4",
         "rollup-plugin-postcss": "^4.0.2",
         "ts-jest": "^29.4.6",
