@@ -142,7 +142,7 @@ jobs:
     
     steps:
       - name: Download demo artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: demo-dist
           path: ./dist
